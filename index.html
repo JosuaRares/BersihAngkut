@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BersihAngkut – Jasa Penjemputan Sampah Praktis & Terpercaya</title>
+<meta name="description" content="Jasa penjemputan sampah ke rumah Anda. Hitung tarif langsung dan pesan lewat WhatsApp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============ AUTH ============ -->
+<div class="auth" id="auth" hidden>
+  <div class="auth-box">
+    <a class="logo"><img src="img/logo.png" alt="Logo BersihAngkut">BersihAngkut</a>
+    <div class="box">
+      <div class="switch" role="tablist">
+        <button type="button" id="sw-login" class="on" data-auth="login">Masuk</button>
+        <button type="button" id="sw-reg" data-auth="reg">Daftar</button>
+      </div>
+      <form id="f-login" novalidate>
+        <label for="l-email">Email</label>
+        <input id="l-email" type="email" autocomplete="email" placeholder="nama@email.com">
+        <label for="l-pass">Kata sandi</label>
+        <input id="l-pass" type="password" autocomplete="current-password">
+        <div class="err" id="l-err"></div>
+        <button class="btn" type="submit">Masuk</button>
+        <p class="demo">Akun admin: admin@bersihangkut.id / admin123</p>
+      </form>
+      <form id="f-reg" novalidate hidden>
+        <label for="r-name">Nama lengkap</label>
+        <input id="r-name" type="text" autocomplete="name" placeholder="Contoh: Budi Santoso">
+        <label for="r-email">Email</label>
+        <input id="r-email" type="email" autocomplete="email" placeholder="nama@email.com">
+        <label for="r-phone">Nomor WhatsApp</label>
+        <input id="r-phone" type="tel" autocomplete="tel" placeholder="081234567890">
+        <label for="r-pass">Kata sandi (min. 6 karakter)</label>
+        <input id="r-pass" type="password" autocomplete="new-password">
+        <label for="r-pass2">Ulangi kata sandi</label>
+        <input id="r-pass2" type="password" autocomplete="new-password">
+        <div class="err" id="r-err"></div>
+        <button class="btn" type="submit">Buat akun</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PENGGUNA ============ -->
+<div id="user" hidden>
+<header>
+  <div class="wrap nav">
+    <a href="#" class="logo" data-tab="dashboard"><img src="img/logo.png" alt="Logo BersihAngkut">BersihAngkut</a>
+    <button class="burger" id="burger" aria-label="Buka menu" aria-expanded="false">Menu</button>
+    <nav class="menu" id="menu">
+      <a href="#" data-tab="dashboard">Dashboard</a>
+      <a href="#" data-tab="cara">Cara Kerja</a>
+      <a href="#" data-tab="paket">Paket & Tarif</a>
+      <a href="#" data-tab="pesan" class="btn" style="padding:9px 20px">Pesan Sekarang</a>
+      <span class="who" id="who"></span>
+      <button type="button" class="logout">Keluar</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero tab" id="tab-dashboard">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <h1 id="hello">Halo!</h1>
+        <p>Petugas kami datang ke rumah Anda sesuai jadwal, memilah, lalu mengangkut sampah ke tempat pengolahan yang tepat.</p>
+        <div class="hero-actions">
+          <a href="#" class="btn" data-tab="pesan">Pesan Penjemputan</a>
+          <a href="#" class="btn ghost" data-tab="paket">Hitung Tarif</a>
+        </div>
+      </div>
+      <aside class="panel" aria-label="Ringkasan layanan">
+        <h3>Yang kami jemput</h3>
+        <ul id="rates"></ul>
+      </aside>
+    </div>
+    <div class="stats" id="u-stats"></div>
+    <h3 class="h3b">Riwayat pesanan Anda</h3>
+    <div class="tbl" id="u-orders"></div>
+  </div>
+</section>
+
+<section class="tab" id="tab-cara" hidden>
+  <div class="wrap">
+    <div class="sec-head"><h2>Cara kerjanya</h2></div>
+    <ol class="steps">
+      <li><h3>Isi formulir</h3><p>Tulis alamat, tanggal, dan jam yang Anda inginkan.</p></li>
+      <li><h3>Kirim lewat WhatsApp</h3><p>Pesanan Anda otomatis tertulis rapi, tinggal kirim.</p></li>
+      <li><h3>Petugas datang</h3><p>Sampah ditimbang, diangkut, dan Anda bayar sesuai hasil timbang.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="bg-gray tab" id="tab-paket" hidden>
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Pilih paket, lalu hitung tarifnya</h2>
+      <p class="lead">Klik salah satu paket. Estimasi biaya di kalkulator langsung menyesuaikan.</p>
+    </div>
+    <div class="cards" id="cards"></div>
+    <div class="calc">
+      <div class="box">
+        <h3>Kalkulator tarif</h3>
+        <span class="lbl">Jenis sampah</span>
+        <select id="type" aria-label="Jenis sampah"></select>
+        <span class="lbl">Hitung berdasarkan</span>
+        <div class="seg" role="radiogroup" aria-label="Satuan">
+          <input type="radio" name="unit" id="u-kg" value="kg" checked><label for="u-kg">Berat (kg)</label>
+          <input type="radio" name="unit" id="u-bag" value="bag"><label for="u-bag">Jumlah kantong</label>
+        </div>
+        <label for="qty" id="qty-label">Perkiraan berat (kg)</label>
+        <input type="number" id="qty" min="1" step="1" value="10" inputmode="numeric">
+        <p class="hint" id="qty-hint"></p>
+        <label for="calc-package">Paket</label>
+        <select id="calc-package"></select>
+      </div>
+      <div class="result" aria-live="polite">
+        <h3>Estimasi total biaya</h3>
+        <div class="total" id="total">Rp 0</div>
+        <div class="lines" id="lines"></div>
+        <p class="note">Ini estimasi. Biaya akhir mengikuti hasil timbang di lokasi.</p>
+        <a href="#" class="btn" data-tab="pesan">Lanjut isi formulir</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bg-gray tab" id="tab-pesan" hidden>
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Formulir penjemputan sampah</h2>
+      <p class="lead">Lengkapi data berikut. Pesanan tersimpan di akun Anda dan dikirim ke admin lewat WhatsApp.</p>
+    </div>
+    <div class="order">
+      <form class="box" id="form" novalidate>
+        <label for="name">Nama lengkap</label>
+        <input id="name" type="text" autocomplete="name" placeholder="Contoh: Budi Santoso">
+        <div class="err" data-for="name"></div>
+        <label for="phone">Nomor WhatsApp</label>
+        <input id="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="Contoh: 081234567890">
+        <div class="err" data-for="phone"></div>
+        <label for="address">Alamat penjemputan</label>
+        <textarea id="address" rows="3" placeholder="Jalan, nomor rumah, RT/RW, patokan"></textarea>
+        <div class="err" data-for="address"></div>
+        <div class="row">
+          <div><label for="date">Tanggal</label><input id="date" type="date"><div class="err" data-for="date"></div></div>
+          <div><label for="time">Jam</label><input id="time" type="time" min="06:00" max="18:00" value="08:00"><div class="err" data-for="time"></div></div>
+        </div>
+        <div class="row">
+          <div><label for="f-package">Paket</label><select id="f-package"></select></div>
+          <div><label for="f-type">Jenis sampah</label><select id="f-type"></select></div>
+        </div>
+        <label for="note">Catatan (opsional)</label>
+        <input id="note" type="text" placeholder="Contoh: sampah di depan pagar hijau">
+      </form>
+      <div class="result">
+        <h3>Ringkasan pesanan</h3>
+        <div class="total" id="total2">Rp 0</div>
+        <div class="lines" id="lines2"></div>
+        <p class="note">Ubah jumlah sampah di tab Paket & Tarif. Ringkasan ini ikut berubah.</p>
+        <button type="button" class="btn wa" id="send">Kirim Pesanan via WhatsApp</button>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="year"></span> BersihAngkut. Lingkungan bersih, hidup lebih ringan.</span>
+    <span>Layanan setiap hari, 06.00 – 18.00</span>
+  </div>
+</footer>
+</div>
+
+<!-- ============ ADMIN ============ -->
+<div class="adm" id="admin" hidden>
+  <aside class="side">
+    <a class="logo"><img src="img/logo.png" alt="Logo BersihAngkut">Admin</a>
+    <button type="button" class="on" data-adm="ringkasan">Ringkasan</button>
+    <button type="button" data-adm="pesanan">Pesanan</button>
+    <button type="button" data-adm="pengguna">Pengguna</button>
+    <button type="button" data-adm="tarif">Kelola Tarif</button>
+    <button type="button" class="out logout">Keluar</button>
+  </aside>
+  <div class="adm-main">
+    <div class="adm-sec" id="adm-ringkasan">
+      <h2>Dashboard Admin</h2>
+      <p class="lead" id="adm-hello"></p>
+      <div class="stats" id="a-stats"></div>
+      <div class="box"><h3>Pesanan per status</h3><div id="a-bars"></div></div>
+      <h3 class="h3b">Pesanan terbaru</h3>
+      <div class="tbl" id="a-recent"></div>
+    </div>
+    <div class="adm-sec" id="adm-pesanan" hidden>
+      <h2>Pesanan</h2>
+      <div class="tools"><label for="flt" style="margin:0">Filter status</label>
+        <select id="flt"><option value="">Semua</option><option>Menunggu</option><option>Diproses</option><option>Selesai</option><option>Dibatalkan</option></select></div>
+      <div class="tbl" id="a-orders"></div>
+    </div>
+    <div class="adm-sec" id="adm-pengguna" hidden>
+      <h2>Pengguna</h2>
+      <p class="lead" style="margin-bottom:16px">Akun yang mendaftar lewat halaman Daftar.</p>
+      <div class="tbl" id="a-users"></div>
+    </div>
+    <div class="adm-sec" id="adm-tarif" hidden>
+      <h2>Kelola Tarif</h2>
+      <p class="lead" style="margin-bottom:16px">Perubahan langsung dipakai kalkulator pengguna.</p>
+      <h3 class="h3b" style="margin-top:0">Tarif sampah</h3>
+      <div class="tbl" id="a-waste"></div>
+      <h3 class="h3b">Paket</h3>
+      <div class="tbl" id="a-pkg"></div>
+      <div class="tools"><button type="button" class="btn" id="save-tarif">Simpan tarif</button>
+        <button type="button" class="btn ghost" id="reset-tarif">Kembalikan standar</button></div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="js/script.js"></script>
+</body>
+</html>
